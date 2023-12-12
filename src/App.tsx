@@ -1,38 +1,39 @@
 import React, {useState} from 'react';
 import './App.css';
 import {TodoList} from "./components/todolist/TodoList";
+import {v1} from "uuid";
 
 export type FilterValuesType = 'all' | 'active'| 'completed'
 
 
 function App() {
     let [tasks, setTasks] = useState([
-        {id: 1, title: "HTML&CSS", isDone: true},
-        {id: 2, title: "JS", isDone: true},
-        {id: 3, title: "ReactJS", isDone: false},
-        {id: 4, title: "Redux", isDone: false},
+        {id: v1(), title: "HTML&CSS", isDone: true},
+        {id: v1(), title: "JS", isDone: true},
+        {id: v1(), title: "ReactJS", isDone: false},
+        {id: v1(), title: "Redux", isDone: false},
     ])
-    function removeTask(id: number) {
+    const addTask = (title:string) => {
+      let task = {id:v1(), title:title, isDone: false};
+      let newTasks = [task, ...tasks];
+      setTasks(newTasks)
+    }
+
+        function removeTask(id: string) {
         let filteredTasks = tasks.filter(task => task.id !== id)
         setTasks(filteredTasks)
     }
 
     let [filter, setFilter] = useState<FilterValuesType>('all')
-    let tasksForTofolist = tasks
+    let tasksForToDolist = tasks
 
     if (filter === 'active'){
-        tasksForTofolist = tasks.filter(task => task.isDone === false)
+        tasksForToDolist = tasks.filter(task => !task.isDone)
     }
     if (filter === 'completed'){
-        tasksForTofolist = tasks.filter(task => task.isDone === true)
+        tasksForToDolist = tasks.filter(task => task.isDone)
     }
-    /*
-        let [tasks2, setTasks2] = useState( [
-            { id: 1, title: "Hello world", isDone: true },
-            { id: 2, title: "I am Happy", isDone: false },
-            { id: 3, title: "Open Window", isDone: false },
-            { id: 4, title: "Yo", isDone: false },  ])
-    */
+
     function changeFilter(value: FilterValuesType){
         setFilter(value)
     }
@@ -40,8 +41,9 @@ function App() {
     return (
         <div className="App">
             <TodoList
+                addTask ={addTask}
                 title='What to learn'
-                tasks={tasksForTofolist}
+                tasks={tasksForToDolist}
                 removeTask={removeTask}
                 changeFilter={changeFilter}
             />
