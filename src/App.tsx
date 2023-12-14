@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TodoList} from "./components/todolist/TodoList";
 import {v1} from "uuid";
+import {TodolistTwo} from "./components/TodoListTwo/TodolistTwo";
 
 export type FilterValuesType = 'all' | 'active'| 'completed'
 
@@ -40,6 +41,7 @@ function App() {
 
     return (
         <div className="App">
+            <div>
             <TodoList
                 addTask ={addTask}
                 title='What to learn'
@@ -47,7 +49,7 @@ function App() {
                 removeTask={removeTask}
                 changeFilter={changeFilter}
             />
-
+            </div>
             {/*<TodoList
               title = 'Songs'
               tasks = {tasks2}
@@ -56,7 +58,13 @@ function App() {
             {/*
           <TodoList title = 'Songs'  tasks = {tasks2}/>
 */}
-
+            <TodolistTwo
+                title="What to learn"
+                tasks={tasksForToDolist}
+                removeTask={removeTask}
+                changeFilter={changeFilter}
+                addTask={addTask}
+            />
         </div>
     );
 }
