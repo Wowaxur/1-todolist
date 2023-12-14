@@ -39,9 +39,10 @@ const onAllClickHandler = () => {
     const onCompletedClickHandler = () => {
         props.changeFilter('completed')
     }
+
     return (
         <div className={styles.TodoList}>
-            <h3>{props.title}</h3>
+            <h3>{props.title} </h3>
             <div>
                 <input value={title}
                        onChange={onChangeHandler}
@@ -50,6 +51,7 @@ const onAllClickHandler = () => {
                 <button onClick={addTask}>+</button>
             </div>
             <ul>
+                <h2>Tasks : {props.tasks.length}</h2>
                 {props.tasks.map((task) => {
                     const onCLickHandler = () => {
                         props.removeTask(task.id)

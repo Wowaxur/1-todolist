@@ -1,8 +1,8 @@
 .TodoList {
-    border: 2px solid blue;
+    border: 2px solid #ff0088;
     padding: 15px;
     border-radius: 10px;
-    background-color: lightcyan;
+    background-color: #7cdede;
     text-align: center;
 }
 ul{
