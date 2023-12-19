@@ -1,7 +1,8 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, KeyboardEvent, ChangeEvent} from 'react';
 import {FilterValuesType} from '../../App';
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import s from './TodoListTwo.module.css'
+import '../../App.css'
 type TaskType = {
     id: string
     title: string
@@ -15,14 +16,26 @@ type PropsType = {
     changeFilter: (value: FilterValuesType) => void
     addTask: (title: string) => void
     children?: React.ReactNode;
-
+    changeTaskStatus: (id:string, isDone: boolean) => void
+    filter: string
 }
 export const TodolistTwo: React.FC<PropsType> = ({ children, ...props }) => {
+
     let [title, setTitle] = useState('');
+    const [error, setError] = useState<string|null>(null)
     const addTask = () => {
-        props.addTask(title);
+        const trimmedTaskTitle = title.trim()
+        if (trimmedTaskTitle){
+        props.addTask(title);}
+        else {setError('Title is required')}
         setTitle('');
     };
+    const addTaskKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        setError(null)
+        if (e.key === 'Enter' && title) {
+            addTask();
+        }
+    }
     const onAllClickHandler = () => {
         props.changeFilter('all');
     };
@@ -42,15 +55,13 @@ export const TodolistTwo: React.FC<PropsType> = ({ children, ...props }) => {
             <div>
                 <input
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            addTask();
-                        }
-                    }}
+                    onChange={(e) => setTitle(e.currentTarget.value)}
+                    onKeyDown={addTaskKeyDownHandler}
                     ref={onChangeRef}
+                    className={error ? 'error': ''}
                 />
                 <button onClick={addTask}>+</button>
+                {error && <div className='error-message'>{error}</div>}
             </div>
             <ul ref={listRef}>
                 <h2>Tasks: {props.tasks.length}</h2>
@@ -58,9 +69,13 @@ export const TodolistTwo: React.FC<PropsType> = ({ children, ...props }) => {
                     const onCLickHandler = () => {
                         props.removeTask(task.id);
                     };
+                    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) =>{
+                        let newIsDoneWalue = e.currentTarget.checked
+                        props.changeTaskStatus(task.id, newIsDoneWalue)
+                    }
                     return (
-                        <li key={task.id}>
-                            <input type="checkbox" checked={task.isDone} />
+                        <li key={task.id} className={task.isDone? 'is-done': ''}>
+                            <input type="checkbox" checked={task.isDone} onChange={onChangeHandler} />
                             <span>{task.title}</span>
                             <button onClick={onCLickHandler}>✖️</button>
                         </li>
@@ -68,9 +83,9 @@ export const TodolistTwo: React.FC<PropsType> = ({ children, ...props }) => {
                 })}
             </ul>
             <div>
-                <button onClick={onAllClickHandler}>All</button>
-                <button onClick={onActiveClickHandler}>Active</button>
-                <button onClick={onCompletedClickHandler}>Completed</button>
+                <button className={props.filter ==="all"? "active-filter" :''} onClick={onAllClickHandler}>All</button>
+                <button className={props.filter ==="active"? "active-filter" :''} onClick={onActiveClickHandler}>Active</button>
+                <button className={props.filter ==="completed"? "active-filter" :''} onClick={onCompletedClickHandler}>Completed</button>
             </div>
             {children}
         </div>
